@@ -244,6 +244,7 @@ func TestFieldProperties(t *testing.T) {
 	require.Empty(t, field.DefaultValue)
 	require.NotEmpty(t, field.Options)
 	require.True(t, *field.Option(E_ExtendField.Name).(*bool))
+	assert.False(field.IsOneof)
 
 	field = findField("status_code", msg)
 	require.Equal(t, "status_code", field.Name)
@@ -253,6 +254,7 @@ func TestFieldProperties(t *testing.T) {
 	require.Equal(t, "BookingStatus.StatusCode", field.LongType)
 	require.Equal(t, "com.example.BookingStatus.StatusCode", field.FullType)
 	require.Empty(t, field.DefaultValue)
+	assert.False(field.IsOneof)
 
 	field = findField("category", findMessage("Vehicle", vehicleFile))
 	require.Equal(t, "category", field.Name)
@@ -262,6 +264,7 @@ func TestFieldProperties(t *testing.T) {
 	require.Equal(t, "Vehicle.Category", field.LongType)
 	require.Equal(t, "com.example.Vehicle.Category", field.FullType)
 	require.Empty(t, field.DefaultValue)
+	assert.False(field.IsOneof)
 
 	field = findField("properties", findMessage("Vehicle", vehicleFile))
 	require.Equal(t, "properties", field.Name)
@@ -271,6 +274,7 @@ func TestFieldProperties(t *testing.T) {
 	require.Equal(t, "com.example.Vehicle.PropertiesEntry", field.FullType)
 	require.Empty(t, field.DefaultValue)
 	require.True(t, field.IsMap)
+	assert.False(field.IsOneof)
 
 	field = findField("rates", findMessage("Vehicle", vehicleFile))
 	require.Equal(t, "rates", field.Name)
@@ -279,6 +283,27 @@ func TestFieldProperties(t *testing.T) {
 	require.Equal(t, "sint32", field.LongType)
 	require.Equal(t, "sint32", field.FullType)
 	require.False(t, field.IsMap)
+	assert.False(field.IsOneof)
+
+	field = findField("kilometers", findMessage("Vehicle", vehicleFile))
+	assert.Equal("kilometers", field.Name)
+	assert.Equal("", field.Label)
+	assert.Equal("int32", field.Type)
+	assert.Equal("int32", field.LongType)
+	assert.Equal("int32", field.FullType)
+	assert.False(field.IsMap)
+	assert.True(field.IsOneof)
+	assert.Equal("travel", field.OneofDecl)
+
+	field = findField("human_name", findMessage("Vehicle", vehicleFile))
+	assert.Equal("human_name", field.Name)
+	assert.Equal("", field.Label)
+	assert.Equal("string", field.Type)
+	assert.Equal("string", field.LongType)
+	assert.Equal("string", field.FullType)
+	assert.False(field.IsMap)
+	assert.True(field.IsOneof)
+	assert.Equal("drivers", field.OneofDecl)
 }
 
 func TestServiceProperties(t *testing.T) {
