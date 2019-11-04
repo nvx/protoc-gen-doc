@@ -22,13 +22,11 @@ ADD . .
 RUN go test ./... && \
   CGO_ENABLED=0 GOOS=linux make build
 
-FROM alpine:3.10
+FROM debian:buster-slim
 
 MAINTAINER NV <neovortex@gmail.com>
 
 WORKDIR /
-
-RUN apk add --no-cache bash
 
 COPY --from=build /protoc-gen-doc/protoc-gen-doc /protoc/bin/protoc /usr/local/bin/
 COPY --from=build /protoc/include/ /usr/local/include/
