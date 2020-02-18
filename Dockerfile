@@ -1,14 +1,15 @@
-ARG GOLANG_VERSION=1.13.3
+ARG GOLANG_VERSION=1.13.8
 
 FROM golang:${GOLANG_VERSION} AS build
 
-ENV PROTOC_VERSION=3.10.1
+ENV PROTOC_VERSION=3.11.4
 
 RUN curl -L -o /protoc-${PROTOC_VERSION}-linux-x86_64.zip https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip && \
   apt-get -q -y update && \
   apt-get -q -y install unzip && \
   mkdir -p /protoc && \
   unzip /protoc-${PROTOC_VERSION}-linux-x86_64.zip -d /protoc && \
+  chmod 755 /protoc/bin/protoc && \
   rm /protoc-${PROTOC_VERSION}-linux-x86_64.zip && \
   apt-get remove --purge -y unzip && \
   apt-get autoremove && \
