@@ -17,7 +17,8 @@ builds:
       - arm64
 
 dockers:
-  - image_templates:
+  - skip_push: '{{ if index .Env "SKIP_DOCKER_PUSH"  }}{{ .Env.SKIP_DOCKER_PUSH }}{{ else }}false{{ end }}'
+    image_templates:
       - pseudomuto/{{.ProjectName}}:latest
       - pseudomuto/{{.ProjectName}}:{{.Version}}
       - pseudomuto/{{.ProjectName}}:{{.Major}}
