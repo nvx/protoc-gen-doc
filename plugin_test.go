@@ -1,6 +1,7 @@
 package gendoc_test
 
 import (
+	"path/filepath"
 	"regexp"
 	"testing"
 
@@ -142,9 +143,9 @@ func TestRunPluginForSourceRelative(t *testing.T) {
 	require.NoError(t, err)
 	require.Len(t, resp.File, 2)
 	expected := map[string]int{"index.md": 1, "nested/index.md": 1}
-	require.Contains(t, expected, resp.File[0].GetName())
+	require.Contains(t, expected, filepath.ToSlash(resp.File[0].GetName()))
 	delete(expected, resp.File[0].GetName())
-	require.Contains(t, expected, resp.File[1].GetName())
+	require.Contains(t, expected, filepath.ToSlash(resp.File[1].GetName()))
 	delete(expected, resp.File[1].GetName())
 
 	require.NotEmpty(t, resp.File[0].GetContent())
