@@ -5,8 +5,8 @@ import (
 
 	"buf.build/gen/go/bufbuild/protovalidate/protocolbuffers/go/buf/validate"
 	"github.com/golang/protobuf/proto"
-	"github.com/pseudomuto/protoc-gen-doc/extensions"
-	. "github.com/pseudomuto/protoc-gen-doc/extensions/buf_validate"
+	"github.com/nvx/protoc-gen-doc/extensions"
+	. "github.com/nvx/protoc-gen-doc/extensions/buf_validate"
 	"github.com/stretchr/testify/require"
 )
 

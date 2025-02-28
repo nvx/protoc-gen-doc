@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"io"
 
-	gendoc "github.com/pseudomuto/protoc-gen-doc"
+	gendoc "github.com/nvx/protoc-gen-doc"
 )
 
 const helpMessage = `
