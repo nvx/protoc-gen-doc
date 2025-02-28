@@ -7,7 +7,7 @@ import (
 	html_template "html/template"
 	text_template "text/template"
 
-	"github.com/Masterminds/sprig"
+	"github.com/Masterminds/sprig/v3"
 )
 
 // RenderType is an "enum" for which type of renderer to use.
@@ -36,7 +36,7 @@ func NewRenderType(renderType string) (RenderType, error) {
 		return RenderTypeMarkdown, nil
 	}
 
-	return 0, errors.New("Invalid render type")
+	return 0, errors.New("invalid render type")
 }
 
 func (rt RenderType) renderer() (Processor, error) {
