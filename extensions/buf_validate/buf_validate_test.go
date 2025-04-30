@@ -11,8 +11,8 @@ import (
 )
 
 func TestTransform(t *testing.T) {
-	fieldRules := &validate.FieldConstraints{
-		Type: &validate.FieldConstraints_String_{
+	fieldRules := &validate.FieldRules{
+		Type: &validate.FieldRules_String_{
 			String_: &validate.StringRules{
 
 				MinLen: proto.Uint64(1),

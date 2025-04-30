@@ -17,7 +17,7 @@ type ValidateRule struct {
 
 // ValidateExtension contains the rules set by the (validate.rules) method option extension.
 type ValidateExtension struct {
-	*validate.FieldConstraints
+	*validate.FieldRules
 	rules []ValidateRule // memoized so that we don't have to use reflection more than we need.
 }
 
@@ -26,11 +26,11 @@ func (v ValidateExtension) MarshalJSON() ([]byte, error) { return json.Marshal(v
 
 // Rules returns the set of rules for this extension.
 func (v ValidateExtension) Rules() []ValidateRule {
-	if v.FieldConstraints == nil {
+	if v.FieldRules == nil {
 		return nil
 	}
 	if v.rules == nil {
-		v.rules = flattenRules("", reflect.ValueOf(v.FieldConstraints))
+		v.rules = flattenRules("", reflect.ValueOf(v.FieldRules))
 	}
 	return v.rules
 }
@@ -89,10 +89,10 @@ func flattenRules(prefix string, vv reflect.Value) (rules []ValidateRule) {
 
 func init() {
 	extensions.SetTransformer("buf.validate.field", func(payload interface{}) interface{} {
-		rules, ok := payload.(*validate.FieldConstraints)
+		rules, ok := payload.(*validate.FieldRules)
 		if !ok {
 			return nil
 		}
-		return ValidateExtension{FieldConstraints: rules}
+		return ValidateExtension{FieldRules: rules}
 	})
 }
