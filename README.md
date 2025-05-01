@@ -68,7 +68,7 @@ You can also generate documentation for a single file. This can be done by passi
 docker run --rm \
   -v $(pwd)/examples/doc:/out \
   -v $(pwd)/examples/proto:/protos \
-  pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md Booking.proto [OPTIONALLY LIST MORE FILES]
+  pseudomuto/protoc-gen-doc --doc_opt=markdown,docs.md Customer.proto [OPTIONALLY LIST MORE FILES]
 ```
 
 You can also exclude proto files that match specific path expressions. This is done by passing a second option delimited
@@ -174,7 +174,6 @@ Check out the [example protos](examples/proto) to see all the options.
 
 With the input `.proto` files
 
-* [Booking.proto](examples/proto/Booking.proto)
 * [Customer.proto](examples/proto/Customer.proto)
 * [Vehicle.proto](examples/proto/Vehicle.proto)
 
