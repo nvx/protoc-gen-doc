@@ -1,10 +1,8 @@
-package gendoc_test
+package gendoc
 
 import (
-	"testing"
-
-	. "github.com/nvx/protoc-gen-doc"
 	"github.com/pseudomuto/protokit/utils"
+	"testing"
 )
 
 func BenchmarkParseCodeRequest(b *testing.B) {
@@ -12,7 +10,7 @@ func BenchmarkParseCodeRequest(b *testing.B) {
 	req := utils.CreateGenRequest(set, "Booking.proto", "Vehicle.proto")
 	plugin := new(Plugin)
 
-	for i := 0; i < b.N; i++ {
+	for b.Loop() {
 		plugin.Generate(req)
 	}
 }

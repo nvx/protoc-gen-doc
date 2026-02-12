@@ -1,15 +1,13 @@
-package gendoc_test
+package gendoc
 
 import (
+	"github.com/pseudomuto/protokit/utils"
+	"github.com/stretchr/testify/require"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/pluginpb"
 	"path/filepath"
 	"regexp"
 	"testing"
-
-	"github.com/golang/protobuf/proto"
-	plugin_go "github.com/golang/protobuf/protoc-gen-go/plugin"
-	. "github.com/nvx/protoc-gen-doc"
-	"github.com/pseudomuto/protokit/utils"
-	"github.com/stretchr/testify/require"
 )
 
 func TestParseOptionsForBuiltinTemplates(t *testing.T) {
@@ -21,7 +19,7 @@ func TestParseOptionsForBuiltinTemplates(t *testing.T) {
 	}
 
 	for kind, file := range results {
-		req := new(plugin_go.CodeGeneratorRequest)
+		req := new(pluginpb.CodeGeneratorRequest)
 		req.Parameter = proto.String(kind + "," + file)
 
 		options, err := ParseOptions(req)
@@ -37,7 +35,7 @@ func TestParseOptionsForBuiltinTemplates(t *testing.T) {
 }
 
 func TestParseOptionsForSourceRelative(t *testing.T) {
-	req := new(plugin_go.CodeGeneratorRequest)
+	req := new(pluginpb.CodeGeneratorRequest)
 	req.Parameter = proto.String("markdown,index.md,source_relative")
 	options, err := ParseOptions(req)
 	require.NoError(t, err)
@@ -55,7 +53,7 @@ func TestParseOptionsForSourceRelative(t *testing.T) {
 }
 
 func TestParseOptionsForCustomTemplate(t *testing.T) {
-	req := new(plugin_go.CodeGeneratorRequest)
+	req := new(pluginpb.CodeGeneratorRequest)
 	req.Parameter = proto.String("/path/to/template.tmpl,/base/name/only/output.md")
 
 	options, err := ParseOptions(req)
@@ -67,7 +65,7 @@ func TestParseOptionsForCustomTemplate(t *testing.T) {
 }
 
 func TestParseOptionsForExcludePatterns(t *testing.T) {
-	req := new(plugin_go.CodeGeneratorRequest)
+	req := new(pluginpb.CodeGeneratorRequest)
 	req.Parameter = proto.String(":google/*,notgoogle/*")
 
 	options, err := ParseOptions(req)
@@ -90,7 +88,7 @@ func TestParseOptionsWithInvalidValues(t *testing.T) {
 	}
 
 	for _, value := range badValues {
-		req := new(plugin_go.CodeGeneratorRequest)
+		req := new(pluginpb.CodeGeneratorRequest)
 		req.Parameter = proto.String(value)
 
 		_, err := ParseOptions(req)
@@ -125,7 +123,7 @@ func TestRunPluginForCustomTemplate(t *testing.T) {
 }
 
 func TestRunPluginWithInvalidOptions(t *testing.T) {
-	req := new(plugin_go.CodeGeneratorRequest)
+	req := new(pluginpb.CodeGeneratorRequest)
 	req.Parameter = proto.String("html")
 
 	plugin := new(Plugin)

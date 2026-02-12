@@ -3,12 +3,11 @@ package gendoc
 import (
 	"encoding/json"
 	"fmt"
-	"sort"
-	"strings"
-
-	"github.com/golang/protobuf/protoc-gen-go/descriptor"
 	"github.com/nvx/protoc-gen-doc/extensions"
 	"github.com/pseudomuto/protokit"
+	"google.golang.org/protobuf/types/descriptorpb"
+	"sort"
+	"strings"
 )
 
 // Template is a type for encapsulating all the parsed files, messages, fields, enums, services, extensions, etc. into
@@ -112,7 +111,7 @@ func extractOptions(opts commonOptions) map[string]interface{} {
 		out["deprecated"] = true
 	}
 	switch opts := opts.(type) {
-	case *descriptor.MethodOptions:
+	case *descriptorpb.MethodOptions:
 		if opts != nil && opts.IdempotencyLevel != nil {
 			out["idempotency_level"] = opts.IdempotencyLevel.String()
 		}
@@ -469,7 +468,7 @@ func parseMessageExtension(pe *protokit.ExtensionDescriptor) *MessageExtension {
 	}
 }
 
-func parseMessageField(pf *protokit.FieldDescriptor, oneofDecls []*descriptor.OneofDescriptorProto) *MessageField {
+func parseMessageField(pf *protokit.FieldDescriptor, oneofDecls []*descriptorpb.OneofDescriptorProto) *MessageField {
 	t, lt, ft := parseType(pf)
 
 	m := &MessageField{
@@ -539,8 +538,8 @@ func baseName(name string) string {
 	return parts[len(parts)-1]
 }
 
-func labelName(lbl descriptor.FieldDescriptorProto_Label, proto3 bool, proto3Opt bool) string {
-	if proto3 && !proto3Opt && lbl != descriptor.FieldDescriptorProto_LABEL_REPEATED {
+func labelName(lbl descriptorpb.FieldDescriptorProto_Label, proto3 bool, proto3Opt bool) string {
+	if proto3 && !proto3Opt && lbl != descriptorpb.FieldDescriptorProto_LABEL_REPEATED {
 		return ""
 	}
 
@@ -548,7 +547,7 @@ func labelName(lbl descriptor.FieldDescriptorProto_Label, proto3 bool, proto3Opt
 }
 
 type typeContainer interface {
-	GetType() descriptor.FieldDescriptorProto_Type
+	GetType() descriptorpb.FieldDescriptorProto_Type
 	GetTypeName() string
 	GetPackage() string
 }

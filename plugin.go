@@ -2,15 +2,14 @@ package gendoc
 
 import (
 	"fmt"
-	"io/ioutil"
+	"github.com/pseudomuto/protokit"
+	"google.golang.org/protobuf/proto"
+	"google.golang.org/protobuf/types/pluginpb"
+	"os"
 	"path"
 	"path/filepath"
 	"regexp"
 	"strings"
-
-	"github.com/golang/protobuf/proto"
-	plugin_go "github.com/golang/protobuf/protoc-gen-go/plugin"
-	"github.com/pseudomuto/protokit"
 )
 
 // PluginOptions encapsulates options for the plugin. The type of renderer, template file, and the name of the output
@@ -24,14 +23,14 @@ type PluginOptions struct {
 }
 
 // SupportedFeatures describes a flag setting for supported features.
-var SupportedFeatures = uint64(plugin_go.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
+var SupportedFeatures = uint64(pluginpb.CodeGeneratorResponse_FEATURE_PROTO3_OPTIONAL)
 
 // Plugin describes a protoc code generate plugin. It's an implementation of Plugin from github.com/pseudomuto/protokit
 type Plugin struct{}
 
 // Generate compiles the documentation and generates the CodeGeneratorResponse to send back to protoc. It does this
 // by rendering a template based on the options parsed from the CodeGeneratorRequest.
-func (p *Plugin) Generate(r *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeGeneratorResponse, error) {
+func (p *Plugin) Generate(r *pluginpb.CodeGeneratorRequest) (*pluginpb.CodeGeneratorResponse, error) {
 	options, err := ParseOptions(r)
 	if err != nil {
 		return nil, err
@@ -42,7 +41,7 @@ func (p *Plugin) Generate(r *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeGen
 	customTemplate := ""
 
 	if options.TemplateFile != "" {
-		data, err := ioutil.ReadFile(options.TemplateFile)
+		data, err := os.ReadFile(options.TemplateFile)
 		if err != nil {
 			return nil, err
 		}
@@ -50,7 +49,7 @@ func (p *Plugin) Generate(r *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeGen
 		customTemplate = string(data)
 	}
 
-	resp := new(plugin_go.CodeGeneratorResponse)
+	resp := new(pluginpb.CodeGeneratorResponse)
 	fdsGroup := groupProtosByDirectory(result, options.SourceRelative)
 	for dir, fds := range fdsGroup {
 		template := NewTemplate(fds)
@@ -60,7 +59,7 @@ func (p *Plugin) Generate(r *plugin_go.CodeGeneratorRequest) (*plugin_go.CodeGen
 			return nil, err
 		}
 
-		resp.File = append(resp.File, &plugin_go.CodeGeneratorResponse_File{
+		resp.File = append(resp.File, &pluginpb.CodeGeneratorResponse_File{
 			Name:    proto.String(filepath.Join(dir, options.OutputFile)),
 			Content: proto.String(string(output)),
 		})
@@ -109,7 +108,7 @@ OUTER:
 //
 // The parameter (`--doc_opt`) must be of the format <TYPE|TEMPLATE_FILE>,<OUTPUT_FILE>[,default|source_relative]:<EXCLUDE_PATTERN>,<EXCLUDE_PATTERN>*.
 // The file will be written to the directory specified with the `--doc_out` argument to protoc.
-func ParseOptions(req *plugin_go.CodeGeneratorRequest) (*PluginOptions, error) {
+func ParseOptions(req *pluginpb.CodeGeneratorRequest) (*PluginOptions, error) {
 	options := &PluginOptions{
 		Type:           RenderTypeHTML,
 		TemplateFile:   "",
