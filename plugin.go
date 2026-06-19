@@ -7,7 +7,6 @@ import (
 	"google.golang.org/protobuf/types/pluginpb"
 	"os"
 	"path"
-	"path/filepath"
 	"regexp"
 	"strings"
 )
@@ -60,7 +59,7 @@ func (p *Plugin) Generate(r *pluginpb.CodeGeneratorRequest) (*pluginpb.CodeGener
 		}
 
 		resp.File = append(resp.File, &pluginpb.CodeGeneratorResponse_File{
-			Name:    proto.String(filepath.Join(dir, options.OutputFile)),
+			Name:    proto.String(path.Join(dir, options.OutputFile)),
 			Content: proto.String(string(output)),
 		})
 	}
@@ -76,7 +75,7 @@ func groupProtosByDirectory(fds []*protokit.FileDescriptor, sourceRelative bool)
 	for _, fd := range fds {
 		dir := ""
 		if sourceRelative {
-			dir, _ = filepath.Split(fd.GetName())
+			dir, _ = path.Split(fd.GetName())
 		}
 		if dir == "" {
 			dir = "./"
